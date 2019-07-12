@@ -1,6 +1,6 @@
 **/.idea
 **/venv
-
+**/__pycache__/
 
 [Ll]ibrary/
 [Tt]emp/
