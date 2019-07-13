@@ -6,45 +6,48 @@ public static class Connection
     /// <summary>
     /// Chemin du flux d'entree
     /// </summary>
-    public const string inPath = "G:/CS_orders.txt";
+    public const string inPath = "F:/CS_orders.txt";
     /// <summary>
     /// Chemin du flux de sortie
     /// </summary>
-    public const string outPath = "G:/PY_orders.txt";
+    public const string outPath = "F:/PY_orders.txt";
 
     private static Action<string> orderEvent;
+    private static long lastUpdateMoment = DateTime.Now.Ticks;
 
     public static void Update()
     {
-        LookForOrder();
+        if (DateTime.Now.Ticks - lastUpdateMoment > 1 * 10000)
+        {
+            lastUpdateMoment = DateTime.Now.Ticks;
+            LookForOrder();
+        }
     }
 
     private static void LookForOrder()
     {
-        bool success = false;
-        while(!success)
-            try
-            {
-                //Lis le fichier
-                string fileContent;
-                using (StreamReader sr = new StreamReader(inPath))
-                    fileContent = sr.ReadToEnd(); 
-                    
-                //Vide le fichier
+        string fileContent;
+        try
+        {
+            //Lis le fichier
+            using (StreamReader sr = new StreamReader(inPath))
+                fileContent = sr.ReadToEnd(); 
+                
+            //Vide le fichier si besoin
+            if (fileContent != "")
                 File.WriteAllText(inPath, "");
-
-                //Appelle la fonction d'evenement pour chaque ordre
-                string[] orders = fileContent.Split('\n');
-                foreach (string order in orders)
-                    if (order != "")
-                        orderEvent(order);
-
-                success = true;
-            }
-            catch (IOException)
-            {
-                //Si le fichier est en cours d'utilisation on reessaye
-            }
+        }
+        catch (IOException)
+        {
+            //Si le fichier est en cours d'utilisation on abandonne
+            return;
+        }
+        
+        //Appelle la fonction d'evenement pour chaque ordre
+        string[] orders = fileContent.Split('\n');
+        foreach (string order in orders)
+            if (order != "")
+                orderEvent(order);
     }
 
     /// <summary>

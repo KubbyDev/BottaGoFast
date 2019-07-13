@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class Test : MonoBehaviour
 {
@@ -6,6 +7,13 @@ public class Test : MonoBehaviour
     
     void Start()
     {
+        StartCoroutine(LoadCoroutine());
+    }
+
+    IEnumerator LoadCoroutine()
+    {
+        yield return new WaitForSeconds(2);
+        
         Connection.SetOrderEvent(SendResponse);
 
         Connection.SendCommand("Order 1");
@@ -14,8 +22,14 @@ public class Test : MonoBehaviour
 
     void Update()
     {
+        if (sw == null)
+            return;
+
         if (sw.ElapsedMilliseconds < 1000)
+        {
+            Debug.Log(Time.deltaTime);
             Connection.Update();
+        }
     }
 
     public static void SendResponse(string order)

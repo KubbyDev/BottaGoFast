@@ -4,9 +4,8 @@ import Connection
 
 def send_response(order):
     print(order)
-    response = order[:6] + str(int(order[6:])+1)
-    print("Response: " + response)
-    Connection.send_command(response)
+    print("Response: " + order)
+    Connection.send_command(order)
     global canStart
     canStart = True
 
@@ -16,10 +15,12 @@ Connection.set_order_event(send_response)
 
 while(not canStart):
     Connection.update()
-    time.sleep(0.001)
 
 start = time.time()
+frame = start
 
 while (time.time() - start < 1):
     Connection.update()
-    time.sleep(0.001)
+    if(time.time() - frame > 0.001):
+        print(time.time() - frame)
+    frame = time.time()
