@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Linq;
 
 public static partial class Command
@@ -6,8 +7,6 @@ public static partial class Command
     /// <summary> Envoie un tableau contenant les valeurs des inputs du reseau, et recoit une reponse contenant les valeurs des outputs du reseau </summary>
     public static class NetworkAnswer
     {
-        public const string COMMAND_ID = "NETWORK_ANSWER";
-
         /// <summary> Envoie la commande avec les inputs specifies, puis bloque l'execution jusqu'a reception de la reponse </summary>
         public static float[] SendBlocking(float[] inputs)
         {
@@ -24,10 +23,10 @@ public static partial class Command
         //Construit la commmande
         private static string Construct(float[] inputs)
         {
-            string parameters = inputs.Aggregate("", (current, input) => current + " " + input.ToString());
-            return COMMAND_ID + " " + parameters;
+            return inputs.Aggregate("", (current, input) => current + " " + input.ToString(CultureInfo.InvariantCulture));
         }
         
+        //Interprete la reponse de la commande
         private static float[] Parse(string order)
         {
             string[] parameters = order.Split(' ');

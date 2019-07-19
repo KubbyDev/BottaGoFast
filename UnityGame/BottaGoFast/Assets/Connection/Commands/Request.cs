@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 public static partial class Command
 {
-    //Permet d'envoyer une commande et de traiter la reponse
+    /// <summary> Permet d'envoyer une commande et de traiter la reponse </summary>
+    /// <summary> Pour envoyer une requette et recevoir la reponse sous forme d'un appel de fonction: utiliser SendAsync </summary>
+    /// <summary> Pour envoyer une requette bloquer l'execution jusqu'a reception de la reponse: utiliser SendBlocking </summary>
     private class Request
     {
         private static long NextID = 0; //L'ID de la prochaine requette a etre envoyee
@@ -20,19 +23,19 @@ public static partial class Command
         }
         
         /// <summary> Envoie la requette et appelle la fonction callback quand la reponse est recue </summary>
-        public static void SendAsync(string command, Action<string> callback)
+        public static void SendAsync(string parameters, Action<string> callback)
         {
-            Connection.SendCommand(NextID + command);
+            Connection.SendCommand(NextID + " " + new StackTrace().GetFrame(1).GetMethod().DeclaringType.Name + " " + parameters);
 
             WaitingForResponse.Enqueue(new Request(NextID, callback));
             NextID++;
         }
         
         /// <summary> Envoie la requette et bloque l'execution tant que la reponse n'est pas recue </summary>
-        public static string SendBlocking(string command)
+        public static string SendBlocking(string parameters)
         {
             //Construit et envoie la commande
-            Connection.SendCommand(NextID + command);
+            Connection.SendCommand(NextID + " " + new StackTrace().GetFrame(1).GetMethod().DeclaringType.Name + " " + parameters);
             
             //Quand la reponse est recue on met a jour res, ce qui permet de sortir du while bloquant
             string res = null;
@@ -44,6 +47,7 @@ public static partial class Command
             return res;
         }
 
+        /// <summary> Utilise par le systeme de commandes pour recevoir les reponses </summary>
         public static void ReceiveResponse(long ID, string response)
         {
             if (WaitingForResponse.Peek().ID == ID)

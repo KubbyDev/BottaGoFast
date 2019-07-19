@@ -1,0 +1,31 @@
+public static partial class Command
+{
+    /// <summary> Description of what the command does </summary>
+    public static class NameOfTheCommand
+    {
+        //None of these functions has to be implemented, do what you need
+    
+        /// <summary> Description of what the command does </summary>
+        public static void Send(string parameters)
+        {
+            //Sends the command
+            SendCommand(parameters);
+        } 
+
+        public static void Receive(string parameters)
+        {
+            //Actions when we receive the command
+        }
+
+        /// <summary> Description of what the command does as a request </summary>
+        public static void SendRequest(string parameters)
+        {
+            Request.SendAsync(parameters, OnResponseArrived);
+        }
+        
+        public static void OnResponseArrived(string response)
+        {
+            //Actions when the response is received
+        }
+    }
+}
