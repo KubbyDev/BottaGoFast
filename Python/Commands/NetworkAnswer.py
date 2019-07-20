@@ -1,4 +1,4 @@
-command_id = "NETWORK_ANSWER"
+command_id = "NetworkAnswer"
 
 
 def parse(parameters):

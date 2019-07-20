@@ -22,7 +22,7 @@ public static partial class Command
     
     /// <summary> Fonctions utilisees par le systeme de commandes </summary>
     /// <summary> Vous ne devriez pas utiliser ces fonctions </summary>
-    public class System
+    public static class System
     {
         /// <summary> Initialise le systeme. A appeller le plus tot possible dans l'execution </summary>
         public static void Init()
@@ -51,7 +51,7 @@ public static partial class Command
 
         /// <summary> Gere totalement la reception d'une commande </summary>
         /// <summary> Cette fonction est doit etre referencee dans Connection.orderEvent </summary>
-        public static void Receive(string order)
+        private static void Receive(string order)
         {
             string firstArg = order.Substring(0, order.IndexOf(' ') + 1);
             if (long.TryParse(firstArg, out long ID))
@@ -88,7 +88,26 @@ public static partial class Command
 
             Debug.LogError("Couldn't find command " + args[0]);
         }
+        
+        //Substring mais qui essaye de faire avec quand on lui donne des parametres pourris
+        private static string RobustSubstring(string s, int from) => RobustSubstring(s, from, s.Length - from);
+        private static string RobustSubstring(string s, int from, int length)
+        {
+            if (from >= s.Length)
+                return "";
 
+            if (from < 0)
+            {
+                length += from;
+                from = 0;
+            }
+
+            if (length + from > s.Length)
+                length = s.Length - from;
+
+            return s.Substring(from, length);
+        }
+        
         //Renvoie un tableau contenant 2 strings: le premier argument, le reste
         //Les arguments sont supposes separes par des espaces
         private static string[] SeparateFirstArg(string order)
@@ -97,7 +116,7 @@ public static partial class Command
             while (i < order.Length && order[i] != ' ')
                 i += 1;
 
-            return new string[] {order.Substring(0, i), order.Substring(i + 1)};
+            return new string[] {RobustSubstring(order, 0, i), RobustSubstring(order, i + 1)};
         }
     }
 }

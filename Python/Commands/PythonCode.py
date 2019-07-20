@@ -1,4 +1,4 @@
-command_id = "PYTHON_CODE"
+command_id = "PythonCode"
 
 
 def execute(code):

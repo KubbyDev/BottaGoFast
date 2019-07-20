@@ -23,6 +23,9 @@ def execute(order):
         return NetworkAnswer.execute(rest)
     if(firstarg == PythonCode.command_id):
         return PythonCode.execute(rest)
+    # Si l'ordre est inconnu
+    print("Couldn't find order " + firstarg)
+    return None
 
 
 # Renvoie un Tuple contenant (le premier argument, le reste)
