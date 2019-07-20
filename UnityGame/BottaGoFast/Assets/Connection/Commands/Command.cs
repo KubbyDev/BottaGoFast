@@ -53,9 +53,11 @@ public static partial class Command
         /// <summary> Cette fonction est doit etre referencee dans Connection.orderEvent </summary>
         private static void Receive(string order)
         {
-            string firstArg = order.Substring(0, order.IndexOf(' ') + 1);
-            if (long.TryParse(firstArg, out long ID))
-                Request.ReceiveResponse(ID, order.Substring(order.IndexOf(' ') + 1));
+            string[] args = SeparateFirstArg(order);
+            string commandName = args[0];
+            string commandParameters = args[1];
+            if (long.TryParse(commandName, out long ID))
+                Request.ReceiveResponse(ID, commandParameters);
             else
                 Execute(order);
         }
@@ -79,14 +81,16 @@ public static partial class Command
         private static void Execute(string order)
         {
             string[] args = SeparateFirstArg(order);
+            string commandName = args[0];
+            string commandParameters = args[1];
             foreach (ReceivableCommand command in receivableCommands)
-                if (command.CommandID == args[0])
+                if (command.CommandID == commandName)
                 {
-                    command.ReceiveMethod.Invoke(null, new object[] {args[1]});
+                    command.ReceiveMethod.Invoke(null, new object[] {commandParameters});
                     return;
                 }
 
-            Debug.LogError("Couldn't find command " + args[0]);
+            Debug.LogError("Couldn't find command " + commandName);
         }
         
         //Substring mais qui essaye de faire avec quand on lui donne des parametres pourris

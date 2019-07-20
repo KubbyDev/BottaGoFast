@@ -13,3 +13,4 @@ Instructions to install tensorflow
 - run this command: conda install tensorflow
 - run this command: python
 - run this python code: import tensorflow (Should not te cracher a la gueule)
+- run this python code to know which python executable you need to launch: tensorflow.__file__

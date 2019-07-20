@@ -3,6 +3,7 @@ import time
 
 inPath = "F:/PY_orders.txt"
 outPath = "F:/CS_orders.txt"
+debug_mode = True
 lastUpdateMoment = 0
 
 
@@ -28,6 +29,8 @@ def look_for_order():
     orders = filecontent.split('\n')
     for order in orders:
         if (order != ""):
+            if(debug_mode):
+                print("Received: \"" + order + "\"")
             orderEvent(order)
 
 
@@ -53,6 +56,8 @@ def send_command(command):
             file = open(outPath, "a+")
             file.write(command + "\n")
             file.close()
+            if(debug_mode):
+                print("Sent: \"" + command + "\"")
             success = True
         except PermissionError:
             # Si le fichier est en cours d'utilisation on reessaye

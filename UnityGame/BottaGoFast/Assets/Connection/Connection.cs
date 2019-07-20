@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using UnityEngine;
 
 public static class Connection
 {
@@ -11,6 +12,10 @@ public static class Connection
     /// Chemin du flux de sortie
     /// </summary>
     public const string outPath = "F:/PY_orders.txt";
+    /// <summary>
+    /// True: Logs debug things
+    /// </summary>
+    public static bool DEBUG_MODE = true;
 
     private static Action<string> orderEvent;
     private static long lastUpdateMoment = DateTime.Now.Ticks;
@@ -47,7 +52,10 @@ public static class Connection
         string[] orders = fileContent.Split('\n');
         foreach (string order in orders)
             if (order != "")
+            {    
+                if(DEBUG_MODE) Debug.Log("Received: \"" + order + "\"");
                 orderEvent(order);
+            }
     }
 
     /// <summary>
@@ -68,6 +76,8 @@ public static class Connection
                 using (StreamWriter sw = new StreamWriter(outPath, true))
                     sw.WriteLine(command);
 
+                if(DEBUG_MODE) Debug.Log("Sent: \"" + command + "\"");
+                
                 success = true;
             }
             catch (IOException)

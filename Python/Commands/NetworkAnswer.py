@@ -10,4 +10,4 @@ def construct(answer):
 
 
 def execute(parameters):
-    pass
+    return parameters

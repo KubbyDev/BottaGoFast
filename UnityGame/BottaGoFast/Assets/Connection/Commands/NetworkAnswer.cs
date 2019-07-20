@@ -23,16 +23,19 @@ public static partial class Command
         //Construit la commmande
         private static string Construct(float[] inputs)
         {
-            return inputs.Aggregate("", (current, input) => current + " " + input.ToString(CultureInfo.InvariantCulture));
+            string res = inputs.Length > 0 ? inputs[0].ToString(CultureInfo.InvariantCulture) : "";
+            for (int i = 1; i < inputs.Length; i++)
+                res += " " + inputs[i].ToString(CultureInfo.InvariantCulture);
+            return res;
         }
         
         //Interprete la reponse de la commande
         private static float[] Parse(string order)
         {
-            string[] parameters = order.Split(' ');
-            float[] res = new float[parameters.Length-1];
+            string[] parameters = order.Split(new string[] {" "}, StringSplitOptions.RemoveEmptyEntries);
+            float[] res = new float[parameters.Length];
 
-            for (int i = 1; i < parameters.Length; i++)
+            for (int i = 0; i < parameters.Length; i++)
                 res[i] = float.Parse(parameters[i]);
 
             return res;
