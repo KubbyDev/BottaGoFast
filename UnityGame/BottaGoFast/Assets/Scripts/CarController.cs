@@ -38,7 +38,7 @@ public class CarController : MonoBehaviour
         FR_wheel.steerAngle = angle;
         FR_wheel_body.localRotation = Quaternion.Euler(new Vector3(0,angle,90));
         FL_wheel.steerAngle = angle;
-        FL_wheel_body.localRotation = Quaternion.Euler(new Vector3(0, angle, 90));
+        FL_wheel_body.localRotation = Quaternion.Euler(new Vector3(0, angle,90));
 
 
         if (Input.GetKey(KeyCode.Space) || Input.GetAxis("Vertical") == 0)
